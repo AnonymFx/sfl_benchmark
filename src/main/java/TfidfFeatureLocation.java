@@ -20,6 +20,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TotalHitCountCollector;
+import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -77,7 +78,7 @@ public class TfidfFeatureLocation implements FeatureLocationTechnique {
 
         IndexWriterConfig irconfig = new IndexWriterConfig(javaAnalyzer);
         irconfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        irconfig.setSimilarity(SimilarityFactory.createSimilarity(config.getDocumentSimilarity()));
+        irconfig.setSimilarity(new DefaultSimilarity());
         IndexWriter indexWriter = new IndexWriter(indexDir, irconfig);
 
         Collection<File> files = getFiles();
@@ -108,7 +109,7 @@ public class TfidfFeatureLocation implements FeatureLocationTechnique {
         String queryString = preprocessText(feature);
         Set<SearchResult> resultList = new HashSet<>();
         try {
-            indexSearcher.setSimilarity(SimilarityFactory.createSimilarity(config.getQuerySimilarity()));
+            indexSearcher.setSimilarity(new DefaultSimilarity());
 
             BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
             QueryParser parser = new QueryParser(CONTENTS_FIELD, englishAnalyzer);
